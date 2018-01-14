@@ -21,4 +21,4 @@ erl_crash.dump
 
 *.sw*
 
-config/secret.exs
+config/secrets.exs
