@@ -21,9 +21,13 @@ defmodule PoloniexApi.Public do
     |> Enum.find( fn({ticker, data}) -> ticker == combined_ticker end)
   end
 
-  def volume24 do
+  def volume24, do: fetch_24_volume
+  def volume24(source_ticker, target_ticker) do
+    combined_ticker = String.upcase(source_ticker) <> "_" <> String.upcase(target_ticker)
     fetch_24_volume
+    |> Enum.find( fn({ticker, data}) -> ticker == combined_ticker end)
   end
+
 
   def order_book, do: fetch_order_book("all")
   def order_book(source_ticker, target_ticker) do
@@ -45,7 +49,7 @@ defmodule PoloniexApi.Public do
     HTTPoison.get!(api_url, [{"Accept", "application/json"}], [params: [{"command", "return24hVolume"}]])
     |> parse_response
   end
-  
+
   defp parse_response response do
     response.body
     |> Poison.decode!
