@@ -32,8 +32,10 @@ defmodule PoloniexApi.Public do
   def volume24(source_ticker, target_ticker) do
     combined_ticker = combine_tickers(source_ticker, target_ticker)
 
-    fetch_24_volume()
-    |> Enum.find(fn {ticker, _data} -> ticker == combined_ticker end)
+    case fetch_24_volume() do
+      {:ok, currencies} -> find_ticker(currencies, combined_ticker)
+      error -> error
+    end
   end
 
   def order_book, do: fetch_order_book("all")
@@ -79,7 +81,7 @@ defmodule PoloniexApi.Public do
 
   def currencies(ticker) do
     case fetch_currencies() do
-      {:ok, currencies} -> currencies |> Enum.find(fn {curr, _data} -> curr == ticker end)
+      {:ok, currencies} -> find_ticker(currencies, ticker)
       error -> error
     end
   end
