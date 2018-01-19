@@ -1,6 +1,10 @@
-# PoloniexApi
+# PoloniexApi - WORK IN PROGRESS
 
-**TODO: Add description**
+## Current State
+
++ Public API implemented
+
++ *TODO* implement trading api
 
 ## Installation
 
