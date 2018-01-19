@@ -11,48 +11,65 @@ defmodule PoloniexApi.Public do
     + returnLoanOrders
   """
   def ticker do
-    fetch_ticker
+    fetch_ticker()
   end
 
-  @spec ticker(binary, binary)::map
+  @spec ticker(binary, binary) :: map
   def ticker(source_ticker, target_ticker) do
     combined_ticker = String.upcase(source_ticker) <> "_" <> String.upcase(target_ticker)
-    fetch_ticker
-    |> Enum.find( fn({ticker, data}) -> ticker == combined_ticker end)
+
+    fetch_ticker()
+    |> Enum.find(fn {ticker, _data} -> ticker == combined_ticker end)
   end
 
-  def volume24, do: fetch_24_volume
+  def volume24, do: fetch_24_volume()
+
   def volume24(source_ticker, target_ticker) do
     combined_ticker = String.upcase(source_ticker) <> "_" <> String.upcase(target_ticker)
-    fetch_24_volume
-    |> Enum.find( fn({ticker, data}) -> ticker == combined_ticker end)
+
+    fetch_24_volume()
+    |> Enum.find(fn {ticker, _data} -> ticker == combined_ticker end)
   end
 
-
   def order_book, do: fetch_order_book("all")
+
   def order_book(source_ticker, target_ticker) do
     combined_ticker = String.upcase(source_ticker) <> "_" <> String.upcase(target_ticker)
     fetch_order_book(combined_ticker)
   end
 
   defp fetch_order_book(ticker) do
-    HTTPoison.get!(api_url, [{"Accept", "application/json"}], [params: [{"command", "returnOrderBook"}, {"currencyPair", ticker}]])
+    HTTPoison.get!(
+      api_url(),
+      [{"Accept", "application/json"}],
+      params: [{"command", "returnOrderBook"}, {"currencyPair", ticker}]
+    )
     |> parse_response
   end
 
   defp fetch_ticker do
-    HTTPoison.get!(api_url, [{"Accept", "application/json"}], [params: [{"command", "returnTicker"}], timeout: 10000, recv_timeout: 10000])
+    HTTPoison.get!(
+      api_url(),
+      [{"Accept", "application/json"}],
+      params: [{"command", "returnTicker"}],
+      timeout: 10000,
+      recv_timeout: 10000
+    )
     |> parse_response
   end
 
   defp fetch_24_volume do
-    HTTPoison.get!(api_url, [{"Accept", "application/json"}], [params: [{"command", "return24hVolume"}]])
+    HTTPoison.get!(
+      api_url(),
+      [{"Accept", "application/json"}],
+      params: [{"command", "return24hVolume"}]
+    )
     |> parse_response
   end
 
-  defp parse_response response do
+  defp parse_response(response) do
     response.body
-    |> Poison.decode!
+    |> Poison.decode!()
   end
 
   defp api_url do
