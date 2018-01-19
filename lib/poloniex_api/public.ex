@@ -86,6 +86,10 @@ defmodule PoloniexApi.Public do
     end
   end
 
+  def loan_orders(ticker) do
+    get([{"command", "returnLoanOrders"}, {"currency", ticker}])
+  end
+
   defp find_ticker(collection, ticker) do
     case collection |> Enum.find(fn {curr, _data} -> curr == ticker end) do
       nil -> {:error, "Currency not found"}
